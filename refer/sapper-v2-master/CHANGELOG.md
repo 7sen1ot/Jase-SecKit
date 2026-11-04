@@ -1,5 +1,12 @@
 # Changelog
 
+## Local reference copy — 2026-11-04
+
+- Removed Dockerfiles, image build/export scripts, the local container launcher,
+  `.dockerignore`, and the bundled `nuclei.zip`. Use the local CLI installer.
+- Kept commander doctrine, architecture documents, and runtime scripts as design
+  references. Docker entries below describe the upstream project's history.
+
 ## 1.0.0 "sapper" — 2026-10-15
 
 Sapper is the offensive fork of claude-fact-graph (fgc), specialized for
