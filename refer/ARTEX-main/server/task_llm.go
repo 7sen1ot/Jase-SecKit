@@ -432,6 +432,9 @@ func isRetryableStreamError(err error) bool {
 	if err == nil {
 		return false
 	}
+	if agent.IsThinkingParameterError(err) {
+		return false
+	}
 	if isQuotaExhaustedError(err) {
 		return false
 	}

@@ -67,6 +67,18 @@ func (c *Capture) SetRequest(body string) {
 	}
 }
 
+// SetEffectiveRequest replaces the initial request after a capability adaptation.
+// Ordinary SDK retries keep SetRequest's original first-attempt semantics; the
+// recorded response attempts still include the initial capability rejection.
+func (c *Capture) SetEffectiveRequest(body string) {
+	if c == nil || body == "" {
+		return
+	}
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.request = body
+}
+
 // TeeResponse opens a new attempt and wraps rc so everything read from it is
 // mirrored into that attempt. It tees rather than reads because a successful
 // response is an SSE stream that must keep streaming to the caller.

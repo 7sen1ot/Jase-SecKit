@@ -101,3 +101,15 @@ func TestCaptureEmptyWhenNoHTTPHappened(t *testing.T) {
 		t.Fatal("unused capture should be empty")
 	}
 }
+
+func TestCaptureEffectiveRequestAfterCapabilityAdaptation(t *testing.T) {
+	var nilCapture *Capture
+	nilCapture.SetEffectiveRequest("body")
+	_, c := NewCapture(context.Background())
+	c.SetRequest(`{"thinking":{"type":"disabled"}}`)
+	c.SetEffectiveRequest(`{"thinking":{"type":"enabled"}}`)
+	c.SetRequest(`{"thinking":{"type":"disabled"}}`)
+	if c.RawRequest() != `{"thinking":{"type":"enabled"}}` {
+		t.Fatal("capture still contains the rejected request instead of the effective request")
+	}
+}

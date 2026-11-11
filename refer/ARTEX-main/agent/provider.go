@@ -10,6 +10,7 @@ package agent
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -280,7 +281,11 @@ func (c Config) NewProvider() (llm.Provider, error) {
 	if c.RatePerSecond > 0 || c.RatePerMinute > 0 {
 		lc.RateLimit = &llm.RateLimit{PerSecond: c.RatePerSecond, PerMinute: c.RatePerMinute}
 	}
-	return llm.NewProvider(lc)
+	provider, err := llm.NewProvider(lc)
+	if err != nil {
+		return nil, err
+	}
+	return &thinkingProvider{Provider: provider, model: c.Model, thinkingType: c.ThinkingType}, nil
 }
 
 // IsQuotaExhaustedMessage deliberately recognizes only explicit balance,
@@ -336,6 +341,16 @@ type quotaAwareTransport struct {
 }
 
 func (t quotaAwareTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if low, _ := req.Context().Value(lowThinkingKey{}).(bool); low {
+		var err error
+		req, err = lowThinkingRequest(req)
+		if err != nil {
+			return nil, err
+		}
+		// The capability retry changes the wire body. Record the effective
+		// request rather than leaving the rejected disabled request beside a 200.
+		llmrec.CaptureFrom(req.Context()).SetEffectiveRequest(requestBodySnapshot(req))
+	}
 	// Custom session-id header: name is user-configured, value is THIS run's
 	// session id (norma stashes it on the context via transcript.WithSessionID).
 	// Stable across a session's turns and distinct across sessions — exactly what
@@ -376,6 +391,54 @@ func (t quotaAwareTransport) RoundTrip(req *http.Request) (*http.Response, error
 		resp.Status = "402 Payment Required"
 	}
 	return resp, nil
+}
+
+// Norma exposes effort only on provider config. Override it at the wire boundary
+// for this capability-adapted request, before raw-request recording, without
+// mutating shared config or constructing a second provider/independent limiter.
+func lowThinkingRequest(req *http.Request) (*http.Request, error) {
+	body := requestBodySnapshot(req)
+	var data map[string]json.RawMessage
+	if err := json.Unmarshal([]byte(body), &data); err != nil {
+		return nil, fmt.Errorf("llm: adapt thinking request: %w", err)
+	}
+	switch {
+	case strings.HasSuffix(req.URL.Path, "/messages"):
+		var output map[string]json.RawMessage
+		if raw := data["output_config"]; len(raw) > 0 {
+			if err := json.Unmarshal(raw, &output); err != nil {
+				return nil, fmt.Errorf("llm: adapt output_config: %w", err)
+			}
+		}
+		if output == nil {
+			output = make(map[string]json.RawMessage)
+		}
+		output["effort"] = json.RawMessage(`"low"`)
+		data["output_config"], _ = json.Marshal(output)
+	case strings.HasSuffix(req.URL.Path, "/responses"):
+		var reasoning map[string]json.RawMessage
+		if raw := data["reasoning"]; len(raw) > 0 {
+			if err := json.Unmarshal(raw, &reasoning); err != nil {
+				return nil, fmt.Errorf("llm: adapt reasoning: %w", err)
+			}
+		}
+		if reasoning == nil {
+			reasoning = make(map[string]json.RawMessage)
+		}
+		reasoning["effort"] = json.RawMessage(`"low"`)
+		data["reasoning"], _ = json.Marshal(reasoning)
+	default:
+		data["reasoning_effort"] = json.RawMessage(`"low"`)
+	}
+	encoded, err := json.Marshal(data)
+	if err != nil {
+		return nil, fmt.Errorf("llm: encode adapted thinking request: %w", err)
+	}
+	clone := req.Clone(req.Context())
+	clone.Body = io.NopCloser(bytes.NewReader(encoded))
+	clone.ContentLength = int64(len(encoded))
+	clone.GetBody = func() (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(encoded)), nil }
+	return clone, nil
 }
 
 // requestBodySnapshot copies an outgoing request body without consuming it.
