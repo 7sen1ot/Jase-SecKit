@@ -1,12 +1,14 @@
 # Jase-SecKit Disclaimer and Usage Compliance Notice
 
-This notice applies to the Jase-SecKit project's code, tools, and related documentation. Read this notice and the [GNU General Public License v3.0 (GPL v3)](LICENSE) before use. The license governs permission to use, copy, modify, and distribute the software. This notice neither replaces nor changes the license, and does not grant permission to test any third-party system.
+This notice applies to the Jase-SecKit project's code, tools, and related documentation. Read this notice, the root [MIT License](LICENSE), and any applicable third-party license notices before use. The applicable licenses govern permission to use, copy, modify, and distribute the material they cover. This notice does not replace or modify those licenses or add restrictions to the rights they grant. It does not authorize testing of any third-party system.
 
 ## 1 Intended Use
 
 Jase-SecKit is intended for lawful technical research, authorized security testing, internal risk assessments, and other technical work permitted by the license. Its security testing features are intended to help discover and validate risks, improve defenses, and support vulnerability management in compliance with applicable requirements.
 
-The GNU GPL v3 permits commercial and noncommercial use, modification, and distribution, subject to its terms. When distributing the software, comply with the applicable copyright notice, licensing, and corresponding source code requirements. The license does not authorize testing of any target.
+The root MIT License applies only to original content and modifications that the repository authors have the right to license under MIT. It permits commercial and noncommercial use, copying, modification, distribution, sublicensing, and sale, subject to its terms. Include the copyright notice and permission notice in all copies or substantial portions of the covered software. The MIT License itself does not require disclosure of source code.
+
+Third-party code, Skills, documents, examples, and reference materials retain their respective copyrights and licenses. Their inclusion in this repository does not relicense them under MIT. Preserve the applicable copyright, license, and attribution notices, and comply with any source-disclosure or other obligations imposed by their licenses. Consult the accompanying notices and upstream sources when the license or permitted use is unclear; do not assume the root MIT License covers such material. No software license grants authorization to test a target system.
 
 ## 2 Authorized Use
 
@@ -32,7 +34,7 @@ This project must not be used for:
 
 ## 4 Liability and Risks
 
-This project is provided as is. To the extent permitted by applicable law, its authors, maintainers, and contributors make no warranties as to its accuracy, completeness, security, continued availability, or fitness for a particular purpose. Limitations of liability are governed by the [LICENSE](LICENSE) and applicable law.
+This project is provided as is. To the extent permitted by applicable law, its authors, maintainers, and contributors make no warranties as to its accuracy, completeness, security, continued availability, or fitness for a particular purpose. Limitations of liability are governed by applicable law and the license covering the relevant material, including the [MIT License](LICENSE) for content within its scope.
 
 Automated execution, model outputs, and tool results may contain errors, omissions, or unexpected behavior. They cannot replace users' independent judgment and do not constitute legal advice or certification of security compliance. Users must assess risks such as execution privileges, data exposure, system changes, service disruptions, and third-party service charges, and take appropriate isolation, backup, and verification measures.
 

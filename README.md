@@ -9,11 +9,9 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow" alt="License: MIT"></a>
 </p>
 
-<p align="center">简体中文 | <a href="README_EN.md">English</a> | <a href="README_JA.md">日本語</a></p>
-
 `Jase-SecKit` 是一个面向漏洞赏金、授权 Web 安全测试和 AI 辅助漏洞研究的个人仓库。
 
-本仓库对漏洞赏金 Skills 和安全研究资料进行重新整理、精简、转译与工程化改造：删除重复或低价值内容，移除面向 Word 报告自动生成的冗余模块，统一英文 Skill 内容，同时补充全局行为约束、状态文件机制、Prompt 以及 Burp MCP、Chrome DevTools MCP 的使用配置。
+本仓库整理漏洞赏金与代码审计 Skills、安全研究参考资料、全局行为约束、状态文件模板、漏洞复现与报告生成 Prompt，以及 Burp MCP、Chrome DevTools MCP 的客户端配置。
 
 ---
 
@@ -34,7 +32,7 @@
 
 ### 1. 提供全局 Agent 约束
 
-`约束文件/AGENTS.md` 提供中文和英文版本的全局安全测试约束。
+[CLAUDE/AGENTS.md](CLAUDE/AGENTS.md) 提供中文全局安全测试约束，[CLAUDE/CLAUDE.md](CLAUDE/CLAUDE.md) 提供英文版本。黑板模板位于 [CLAUDE/state/blackboard.md](CLAUDE/state/blackboard.md)。
 
 约束文件主要用于：
 
@@ -47,65 +45,71 @@
 
 ### 2. 提供 MCP 与客户端配置
 
-`设置/` 目录包含 Claude Code、Codex、ZCode 等客户端的配置参考，重点接入：
+`SETTINGS/` 目录包含 Claude Code、Codex、ZCode 等客户端的配置参考，重点接入：
 
 - Burp MCP：用于读取代理历史、构造和重放请求、检查请求响应及配合动态验证。
 - Chrome DevTools MCP：用于浏览器会话复用、页面操作、网络请求分析、控制台检查、性能分析、内存调试以及实验性 DevTools 能力。
 
 配置不是通用即插即用文件。使用前必须检查本机路径、MCP 服务地址、客户端版本及支持的参数，并将示例中的占位路径替换为实际绝对路径。
 
-### 3. 提供漏洞赏金 Prompt
+### 3. 提供漏洞复现与报告生成 Prompt
 
-根目录的 `Prompt.md` 由两部分组成：
+根目录的 [PROMPT.md](PROMPT.md) 用于通过 Computer Use 完成漏洞复现、取证与报告交付，主要包含：
 
-- 前半部分：面向本地开源项目、靶场和授权目标的深度漏洞挖掘与动态复现提示词，适合配合偏自主执行的模型使用，例如 DeepSeek、Kimi、GLM 等。
-- 后半部分：面向 Codex / GPT-5.6 的网站架构、JavaScript、接口、状态流和实际运行机制分析提示词。
+- 检查原始复现过程、PoC 和触发条件，排除误报并验证实际安全危害。
+- 按复现顺序保存关键截图、请求响应和危害证据。
+- 生成 UTF-8 编码的 TXT 格式 SRC 漏洞报告，以及独立的漏洞原理通俗解读报告。
+- 按漏洞建立独立文件夹，整理有效 PoC、截图和报告，并在交付前复核证据与结论。
 
-Prompt 更适合作为阶段性引导。可结合全局约束文件使用，在保留模型自主推理能力的同时，要求结论附带代码位置、接口路径、参数、响应字段、调用关系、网络记录或其他可核验证据。
+使用时需准备支持 Computer Use 的运行环境，并按实际目标填写漏洞信息、复现材料和授权范围。Prompt 应结合全局约束使用，所有结论以真实测试和可核验证据为准。
+
+[WORKFLOW.md](WORKFLOW.md) 记录了 `zcode2api → ARTEX → PROMPT.md → SRC` 的简要流程。
 
 ### 4. 保留方法论参考资料
 
-仓库保留了三份与 AI 漏洞挖掘 Agent 设计有关的参考资料：
+`AGENTS/` 目录保留了三份与 AI 漏洞挖掘 Agent 设计有关的参考资料：
 
-- `AI辅助漏洞挖掘系统设计指南.pdf`
-- `围绕Loop的AI SRC系统设计.pptx`
-- `客户端漏洞挖掘 Agent 的设计与实践.md`
+- [AI辅助漏洞挖掘系统设计指南.pdf](AGENTS/AI辅助漏洞挖掘系统设计指南.pdf)
+- [围绕Loop的AI SRC系统设计.pptx](<AGENTS/围绕Loop的AI SRC系统设计.pptx>)
+- [客户端漏洞挖掘 Agent 的设计与实践.md](<AGENTS/客户端漏洞挖掘 Agent 的设计与实践.md>)
 
 这三份资料可用于继续提炼统一的漏洞挖掘 Skill，例如将其中的 Loop、状态管理、动态验证、证据审计、盲区复盘和 Agent 编排方法合并为一套更轻量的入口 Skill。
 
-这些文件属于参考或借鉴材料。其原作者权利、原始许可证和来源声明不因本仓库的 MIT License 而改变。
+`REFER/` 目录收录 [ARTEX](REFER/ARTEX-main/README.md) 和 [Cairn](REFER/Cairn-main/README.md) 两个参考项目，其安装与使用方式见各自的 README。
+
+这些资料和参考项目的原作者权利、原始许可证和来源声明不因本仓库的 MIT License 而改变。
 
 ## 仓库内容
 
 ```text
 Jase-SecKit/
+├── AGENTS/                         # AI 漏洞挖掘 Agent 设计参考资料
+│   ├── AI辅助漏洞挖掘系统设计指南.pdf
+│   ├── 围绕Loop的AI SRC系统设计.pptx
+│   └── 客户端漏洞挖掘 Agent 的设计与实践.md
+├── CLAUDE/
+│   ├── AGENTS.md                   # 中文全局 Agent 约束
+│   ├── CLAUDE.md                   # 英文全局 Agent 约束
+│   └── state/
+│       └── blackboard.md           # 黑板模板
+├── REFER/
+│   ├── ARTEX-main/                 # ARTEX 参考项目
+│   └── Cairn-main/                 # Cairn 参考项目
+├── SETTINGS/
+│   ├── claude-code/                # Claude Code MCP 与运行设置
+│   │   ├── managed-mcp.json
+│   │   └── managed-settings.json
+│   ├── codex/
+│   │   └── config.toml             # Codex 配置
+│   └── zcode/
+│       └── config.json             # ZCode 配置
 ├── SKILL/
-│   ├── Web-Vulnhunt/                # 自主 Web 渗透测试、状态文件与动态验证工作流
-│   ├── flounder/                    # 代码审计 Skill
-│   └── src-report/                  # 漏洞报告撰写 Skill
-├── refer/
-│   ├── ARTEX-main/                  # ARTEX 参考项目
-│   ├── Cairn-main/                  # Cairn 参考项目
-│   └── sapper-v2-master/            # sapper-v2 多 Agent 自主渗透参考项目
-├── 约束文件/
-│   ├── AGENTS.md                    # 中文全局 Agent 约束
-│   ├── CLAUDE.md                    # 英文全局 Agent 约束
-│   └── state/                       # 黑板及状态文件模板
-├── 设置/
-│   ├── ASC_MCP/                     # ASC MCP 服务配置与脚本
-│   ├── claude-code/                 # Claude Code MCP 与运行设置
-│   ├── codex/                       # Codex 配置与指令文件
-│   ├── rules/                       # 客户端规则配置
-│   ├── zcode/                       # ZCode 配置
-│   └── 注册Chrome-CLI.md            # Chrome CLI 注册说明
-├── Prompt.md                        # 漏洞挖掘与网站架构分析 Prompt
-├── 常见漏洞.md                      # 常见漏洞方向与研究参考
-├── AI辅助漏洞挖掘系统设计指南.pdf
-├── 围绕Loop的AI SRC系统设计.pptx
-├── 客户端漏洞挖掘 Agent 的设计与实践.md
+│   ├── Web-Vulnhunt/               # Web 漏洞挖掘方法、验证脚本与参考资料
+│   └── flounder/                   # 代码审计 Skill
+├── PROMPT.md                       # Computer Use 漏洞复现、取证与报告生成 Prompt
+├── WORKFLOW.md                     # zcode2api → ARTEX → PROMPT.md → SRC 简要流程
+├── 常见漏洞.md                     # 常见漏洞方向与研究参考
 ├── README.md
-├── README_EN.md
-├── README_JA.md
 ├── SECURITY.md
 └── LICENSE
 ```
@@ -136,22 +140,22 @@ Jase-SecKit/
 
 ### Burp MCP
 
-Claude Code 示例配置位于：
+Claude Code 示例配置位于 [SETTINGS/claude-code/managed-mcp.json](SETTINGS/claude-code/managed-mcp.json)：
 
 ```text
-/设置/claude-code/managed-mcp.json
+SETTINGS/claude-code/managed-mcp.json
 ```
 
 使用前需要修改：
 
 ```json
-"command": "〖绝对路径〗\\java.exe"
+"command": "【绝对路径】\\java.exe"
 ```
 
 以及：
 
 ```json
-"〖绝对路径〗\\mcp-proxy.jar"
+"【绝对路径】\\mcp-proxy.jar"
 ```
 
 默认示例通过以下地址连接 Burp MCP 服务：
@@ -192,14 +196,16 @@ http://127.0.0.1:9876
 
 根据客户端选择：
 
-- Codex 或支持 `AGENTS.md` 的环境：使用 `约束文件/AGENTS.md`。
-- Claude Code：使用 `约束文件/CLAUDE.md`，或根据项目需要合并到已有项目约束文件。
+- Codex 或支持 `AGENTS.md` 的环境：使用 `CLAUDE/AGENTS.md`。
+- Claude Code：使用 `CLAUDE/CLAUDE.md`，或根据项目需要合并到已有项目约束文件。
 
 不建议直接覆盖已有全局规则。应检查冲突项后进行合并，并确保授权范围、状态文件路径和工具权限符合实际环境。
 
+黑板模板位于 `CLAUDE/state/blackboard.md`。在目标项目中使用时，将模板复制到该项目的 `state/blackboard.md`，或同步调整约束文件中的状态路径；已有黑板应保留并继续更新。
+
 ### 2. 配置 MCP
 
-从 `设置/` 中选择对应客户端的配置作为参考，替换本机路径和服务地址，再验证：
+从 `SETTINGS/` 中选择对应客户端的配置作为参考，替换本机路径和服务地址，再验证：
 
 - MCP 服务是否成功启动。
 - Burp 是否能够读取或创建测试请求。
@@ -209,7 +215,7 @@ http://127.0.0.1:9876
 
 ### 3. 使用 Prompt
 
-不要将 `Prompt.md` 原样用于所有目标。建议按任务替换目标、范围、环境、账号、禁止事项和期望输出，并与全局约束配合使用。
+使用 `PROMPT.md` 时，将 `【XXX-漏洞】` 替换为待复现的漏洞，补充原始 PoC、目标、授权范围、环境和测试账号，并与全局约束配合使用。交付内容按实际验证结果整理为报告、PoC 和截图证据。
 
 模型被要求“必须找到若干 Critical 漏洞”时可能产生确认偏差。实际使用中应坚持：漏洞数量和等级不能预设，最终只报告已被动态验证并完成危害闭环的问题。
 

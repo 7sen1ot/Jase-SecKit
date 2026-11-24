@@ -4,7 +4,3 @@
 **/__pycache__/
 *.py[cod]
 **/.pytest_cache/
-
-# Removed sapper container build artifacts
-/refer/sapper-v2-master/docker/nuclei.zip
-/refer/sapper-v2-master/dist/
